@@ -1,8 +1,10 @@
 package com.Jasoru.Jlive.controller;
 
 import com.Jasoru.Jlive.domain.Message;
+import com.Jasoru.Jlive.domain.User;
 import com.Jasoru.Jlive.repository.MessageRepos;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +19,7 @@ public class MainController {
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
-        return "greeting";
+        return "greeting.ftlh";
     }
 
     @GetMapping("/main")
@@ -30,8 +32,12 @@ public class MainController {
     }
 
     @PostMapping("/main")
-    public String add(@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
-        Message message = new Message(text, tag);
+    public String add(
+            @AuthenticationPrincipal User user,
+            @RequestParam String text,
+            @RequestParam String tag, Map<String, Object> model
+    ) {
+        Message message = new Message(text, tag, user);
 
         messageRepos.save(message);
 
